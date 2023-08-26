@@ -1,0 +1,3 @@
+@reboot /app/timelapse.sh
+0 * * * * /app/timelapse.sh
+# INTENTIONALLY BLANK
