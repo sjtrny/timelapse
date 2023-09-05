@@ -12,5 +12,6 @@ RUN chmod +x /app/timelapse-cron
 RUN crontab /app/timelapse-cron
 
 RUN mkdir /app/pics
+RUN mkdir /app/output
 
 CMD crond -f
