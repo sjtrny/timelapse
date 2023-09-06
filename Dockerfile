@@ -7,11 +7,9 @@ ENV TZ=Australia/Sydney
 
 ADD app /app
 
-RUN chmod +x /app/timelapse.sh
-RUN chmod +x /app/timelapse-cron
+RUN chmod +x /app
 RUN crontab /app/timelapse-cron
 
 RUN mkdir /app/pics
-RUN mkdir /app/output
 
 CMD crond -f
