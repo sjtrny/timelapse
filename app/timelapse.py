@@ -17,22 +17,26 @@ p = re.compile(regex)
 
 var_threshold = 2000
 
-# Nuke /out
-if os.path.exists("out/") and os.path.isdir("out/"):
-    shutil.rmtree("out/")
-os.mkdir('out')
+pic_dir = "./data/pics"
+tmp_dir = "./data/tmp"
+tls_dir = "./data/timelapses"
 
-all_imgs = sorted(glob_re(regex, "pics"))
+# Nuke /out
+if os.path.exists(tmp_dir) and os.path.isdir(tmp_dir):
+    shutil.rmtree(tmp_dir)
+os.mkdir(tmp_dir)
+
+all_imgs = sorted(glob_re(regex, pic_dir))
 
 for img_name in tqdm(all_imgs):
-    img = cv2.imread(f"pics/{img_name}")
+    img = cv2.imread(f"{pic_dir}/{img_name}")
     stat = cv2.Laplacian(img, cv2.CV_64F).var()
     if stat >= var_threshold:
-        cv2.imwrite(f"out/{img_name}", img)
+        cv2.imwrite(f"{tmp_dir}/{img_name}", img)
     else:
         print("SKIPPING", img_name)
 
-all_imgs = glob_re(regex, "out")
+all_imgs = glob_re(regex, tmp_dir)
 
 # Calculate length
 n_frames = len(all_imgs)
@@ -42,7 +46,7 @@ target_time = 5
 window_nframes = max(1, math.ceil( orig_time/target_time ))
 
 stream = ffmpeg.input(
-    './out/*.jpg',
+    f'{tmp_dir}/*.jpg',
     pattern_type="glob",
     framerate=fps,
 )
@@ -66,7 +70,7 @@ stream = ffmpeg.filter(stream, 'setpts', f"PTS/{window_nframes}")
 now = datetime.now()
 stream = ffmpeg.output(
     stream,
-    f"video_{now.strftime('%Y_%m_%d_%H_%M')}.mp4",
+    f"{tls_dir}/video_{now.strftime('%Y_%m_%d_%H_%M')}.mp4",
     format='mp4',
 )
 
