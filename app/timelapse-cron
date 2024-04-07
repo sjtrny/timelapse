@@ -1,2 +1,2 @@
-0 * * * * /app/capture.sh
+0 * * * * /app/capture.sh > /proc/1/fd/1 2>&1
 # INTENTIONALLY BLANK

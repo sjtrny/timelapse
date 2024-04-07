@@ -1,11 +1,13 @@
 FROM python:3.9-slim
 
+# Must set timezone before installing cron otherwise it will use default
+# timezone of system.
+ENV TZ=Australia/Sydney
+
 RUN apt update
 
 RUN apt install -y cron
 RUN apt install -y ffmpeg
-
-ENV TZ=Australia/Sydney
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
@@ -18,4 +20,4 @@ RUN chmod -R +x /app
 
 RUN crontab /app/timelapse-cron
 
-CMD ["cron", "-f"]
+ENTRYPOINT ["cron", "-f"]
