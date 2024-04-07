@@ -3,6 +3,8 @@ FROM python:3.9-slim
 # Must set timezone before installing cron otherwise it will use default
 # timezone of system.
 ENV TZ=Australia/Sydney
+RUN ln -fs /usr/share/zoneinfo/Australia/Sydney /etc/localtime
+RUN dpkg-reconfigure --frontend noninteractive tzdata
 
 RUN apt update
 
